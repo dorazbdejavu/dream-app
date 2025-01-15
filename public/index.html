@@ -438,6 +438,8 @@
                     ? `${dream} with ${keywords}`
                     : dream || keywords;
 
+                console.log('Sending prompt:', prompt);  // 添加日志
+
                 const response = await fetch(`${API_BASE_URL}/api/generate`, {
                     method: 'POST',
                     headers: {
@@ -452,7 +454,7 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to generate image');
+                    throw new Error(typeof errorData.error === 'string' ? errorData.error : JSON.stringify(errorData.error));
                 }
 
                 const data = await response.json();
@@ -472,12 +474,19 @@
                     imageBox.appendChild(promptText);
                     imageContainer.appendChild(imageBox);
                 } else {
-                    throw new Error(data.error);
+                    throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
                 }
 
             } catch (error) {
-                console.error('Error:', error);
-                alert('生成梦境图像失败：' + error.message);
+                console.error('Error details:', error);
+                let errorMessage = error.message;
+                try {
+                    const errorObj = JSON.parse(error.message);
+                    errorMessage = errorObj.message || errorObj.error || error.message;
+                } catch (e) {
+                    // 如果解析失败，使用原始错误消息
+                }
+                alert('生成梦境图像失败：' + errorMessage);
             } finally {
                 loading.style.display = 'none';
             }
