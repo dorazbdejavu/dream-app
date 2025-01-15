@@ -1,18 +1,4 @@
 node_modules
 .env
 .DS_Store
-test-*.js
-basic.js
-channel-test.js
-+ env-test.js
-+ .env.save
-+ basic-test.js
-+ check-token.js
-+ list-channels.js
-+ package-lock.json
-+ script.js
-+ simple-test.js
-+ simple-token-test.js
-+ styles.css
-+ test.js
-+ token-format-test.js
+.vercel

@@ -440,7 +440,7 @@
 
                 console.log('Sending prompt:', prompt);  // 添加日志
 
-                const response = await fetch(`/api/generate`, {
+                const response = await fetch(`${API_BASE_URL}/generate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
