@@ -1,5 +1,9 @@
 import OpenAI from 'openai';
 
+if (!process.env.OPENAI_API_KEY) {
+    throw new Error('Missing OpenAI API Key');
+}
+
 export default class DreamAPI {
     constructor() {
         this.openai = new OpenAI({
@@ -18,18 +22,18 @@ export default class DreamAPI {
             }
             
             // 构建更安全和艺术化的提示词
-            let enhancedPrompt = `A digital art illustration of ${cleanPrompt}`;
+            let enhancedPrompt = `Digital art: ${cleanPrompt}`;
             
             // 如果有关键词，添加到提示词中
             if (req.body.keywords) {
                 const keywords = String(req.body.keywords).trim();
                 if (keywords) {
-                    enhancedPrompt += ` with ${keywords}`;
+                    enhancedPrompt += `. ${keywords}`;
                 }
             }
             
             // 添加风格描述
-            enhancedPrompt += `. Dreamlike atmosphere, soft ethereal lighting, artistic style.`;
+            enhancedPrompt += `. Dreamlike, soft lighting.`;
             
             console.log('Enhanced prompt:', enhancedPrompt);
             
@@ -48,10 +52,16 @@ export default class DreamAPI {
                 prompt: enhancedPrompt
             });
         } catch (error) {
-            console.error('Error generating image:', error);
+            console.error('Error details:', {
+                message: error.message,
+                type: error.type,
+                code: error.code,
+                param: error.param,
+                stack: error.stack
+            });
             res.status(500).json({
                 success: false,
-                error: error.message
+                error: `Image generation failed: ${error.message}. Type: ${error.type}, Code: ${error.code}`
             });
         }
     }
@@ -94,4 +104,4 @@ export default class DreamAPI {
             });
         }
     }
-} 
+}
