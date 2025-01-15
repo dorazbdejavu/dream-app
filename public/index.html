@@ -76,17 +76,27 @@
         }
         #welcome-text {
             color: #fff;
-            font-size: 2.5em;
+            font-size: 2em;
             text-align: center;
             max-width: 80%;
             opacity: 0;
             margin-bottom: 2em;
-            animation: fadeIn 1s forwards;
+            animation: welcomeTextIn 1s forwards;
+        }
+        @keyframes welcomeTextIn {
+            0% { 
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            100% { 
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 120px 20px 40px;
+            padding: 180px 20px 40px;
             position: relative;
             z-index: 1;
         }
@@ -171,10 +181,12 @@
         }
         .continue-button {
             flex: 1;
-            background: rgba(128,0,128,0.3);
+            background: #fff;
+            color: #000;
         }
         .continue-button:hover {
-            background: rgba(128,0,128,0.5);
+            background: #f0f0f0;
+            transform: translateY(-2px);
         }
         .image-container {
             margin-top: 40px;
@@ -269,6 +281,19 @@
             opacity: 0;
             animation: fadeIn 1s forwards;
         }
+        .header-cloud {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            opacity: 0.15;
+            animation: floatUpDown 6s ease-in-out infinite;
+        }
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-15px); }
+        }
     </style>
 </head>
 <body>
@@ -298,6 +323,11 @@
     </div>
     
     <div class="container main-content">
+        <div class="header-cloud">
+            <svg width="300" height="150" viewBox="0 0 200 100">
+                <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
+            </svg>
+        </div>
         <h1 class="title">梦觅境：寻觅你的梦域</h1>
         <div class="input-area">
             <div class="input-group">
