@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node server.js",
-    "deploy": "vercel"
+    "deploy": "vercel",
+    "dev": "next dev",
+    "debug": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
     "cors": "^2.8.5",

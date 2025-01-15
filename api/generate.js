@@ -66,4 +66,4 @@ export default async function handler(req, res) {
             error: `Image generation failed: ${error.message}. Type: ${error.type}, Code: ${error.code}`
         });
     }
-}
+} 
