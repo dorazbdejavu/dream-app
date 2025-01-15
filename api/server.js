@@ -22,18 +22,21 @@ export default class DreamAPI {
             }
             
             // 构建更安全和艺术化的提示词
-            let enhancedPrompt = `Digital art: ${cleanPrompt}`;
+            let enhancedPrompt = `A serene digital artwork depicting ${cleanPrompt}`;
             
             // 如果有关键词，添加到提示词中
             if (req.body.keywords) {
                 const keywords = String(req.body.keywords).trim();
                 if (keywords) {
-                    enhancedPrompt += `. ${keywords}`;
+                    enhancedPrompt += `, featuring ${keywords}`;
                 }
             }
             
             // 添加风格描述
-            enhancedPrompt += `. Dreamlike, soft lighting.`;
+            enhancedPrompt += `. Soft lighting and dreamy atmosphere.`;
+            
+            // 确保提示词不包含特殊字符
+            enhancedPrompt = enhancedPrompt.replace(/[^\w\s,.']/g, '');
             
             console.log('Enhanced prompt:', enhancedPrompt);
             
