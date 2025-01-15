@@ -76,7 +76,7 @@
         }
         #welcome-text {
             color: #fff;
-            font-size: 1.4em;
+            font-size: 1.6em;
             text-align: center;
             max-width: 80%;
             opacity: 0;
@@ -368,7 +368,6 @@
         
         <div id="imageContainer" class="image-container"></div>
     </div>
-
     <script>
         // 欢迎动画
         const welcomeScreen = document.getElementById('welcome-screen');
@@ -395,7 +394,6 @@
             await new Promise(r => setTimeout(r, 500));
             enterButton.style.display = 'block';
         };
-
         enterButton.addEventListener('click', () => {
             welcomeScreen.style.opacity = 0;
             setTimeout(() => {
@@ -427,34 +425,47 @@
         }
 
         let currentDream = '';
-
-        const API_BASE_URL = window.location.origin;  // 使用当前域名
-
+        const API_BASE_URL = window.location.origin;
         async function generateDreamImages() {
-            const dream = document.getElementById('dream').value;
-            const keywords = document.getElementById('keywords').value;
+            const dream = document.getElementById('dream').value.trim();
+            const keywords = document.getElementById('keywords').value.trim();
             const loading = document.getElementById('loading');
             const imageContainer = document.getElementById('imageContainer');
 
-            if (!dream) {
-                alert('请描述你的梦境');
+            // 检查是否至少有一个输入框有内容
+            if (!dream && !keywords) {
+                alert('请至少在一个输入框中描述你的梦境');
                 return;
             }
 
-            currentDream = dream;
-            console.log('保存当前梦境:', currentDream);
             loading.style.display = 'block';
-            
             imageContainer.innerHTML = '';
 
             try {
+                // 构建提示词：如果两个都有内容就组合，否则使用有内容的那个
+                const prompt = dream && keywords 
+                    ? `${dream} with ${keywords}`
+                    : dream || keywords;
+
+                currentDream = prompt; // 保存当前梦境内容
+                console.log('保存当前梦境:', currentDream);
+
                 const response = await fetch(`${API_BASE_URL}/api/generate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ dream, keywords })
+                    body: JSON.stringify({ 
+                        dream: prompt,
+                        keywords: ''  // 因为已经在 prompt 中组合了
+                    })
                 });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to generate image');
+                }
 
                 const data = await response.json();
                 
@@ -483,50 +494,46 @@
                 loading.style.display = 'none';
             }
         }
-
         async function continueDream() {
-            const loading = document.getElementById('loading');
-            const dreamInput = document.getElementById('dream');
-            
-            // 检查是否有输入内容
-            if (!dreamInput.value) {
-                alert('请先描述你的梦境');
-                return;
-            }
-            
-            // 使用当前输入框的内容
-            currentDream = dreamInput.value;
-            loading.style.display = 'block';
-            console.log('当前梦境内容:', currentDream);
+    const loading = document.getElementById('loading');
+    const dreamInput = document.getElementById('dream');
+    
+    // 检查是否有输入内容
+    if (!dreamInput.value) {
+        alert('请先描述你的梦境');
+        return;
+    }
+    
+    // 使用当前输入框的内容
+    currentDream = dreamInput.value;
+    loading.style.display = 'block';
+    console.log('当前梦境内容:', currentDream);
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/continue`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ currentDream })
-                });
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/continue`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ currentDream })
+        });
 
-                console.log('服务器响应:', response.status);
-                const data = await response.json();
-                console.log('返回数据:', data);
-                
-                if (data.success) {
-                    const continuationElement = document.getElementById('dreamContinuation');
-                    continuationElement.textContent = data.continuation;
-                } else {
-                    throw new Error(data.error || '续写失败');
-                }
-
-            } catch (error) {
-                console.error('继续梦境错误:', error);
-                console.error('错误详情:', error.stack);
-                alert('继续梦境失败：' + error.message);
-            } finally {
-                loading.style.display = 'none';
-            }
+        console.log('服务器响应:', response.status);
+        const data = await response.json();
+        console.log('返回数据:', data);
+        
+        if (data.success) {
+            const continuationElement = document.getElementById('dreamContinuation');
+            continuationElement.textContent = data.continuation;
+        } else {
+            throw new Error(data.error || '续写失败');
         }
-    </script>
-</body>
-</html>
+
+    } catch (error) {
+        console.error('继续梦境错误:', error);
+        console.error('错误详情:', error.stack);
+        alert('继续梦境失败：' + error.message);
+    } finally {
+        loading.style.display = 'none';
+    }
+}
