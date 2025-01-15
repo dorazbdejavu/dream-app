@@ -415,33 +415,45 @@
 
         let currentDream = '';
 
-        const API_BASE_URL = 'https://dream-app-dorazbdejavu.vercel.app';
+        const API_BASE_URL = window.location.origin;
 
         async function generateDreamImages() {
-            const dream = document.getElementById('dream').value;
-            const keywords = document.getElementById('keywords').value;
+            const dream = document.getElementById('dream').value.trim();
+            const keywords = document.getElementById('keywords').value.trim();
             const loading = document.getElementById('loading');
             const imageContainer = document.getElementById('imageContainer');
 
-            if (!dream) {
-                alert('请描述你的梦境');
+            // 检查是否至少有一个输入框有内容
+            if (!dream && !keywords) {
+                alert('请至少在一个输入框中描述你的梦境');
                 return;
             }
 
-            currentDream = dream;
-            console.log('保存当前梦境:', currentDream);
             loading.style.display = 'block';
-            
             imageContainer.innerHTML = '';
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/generate-dream`, {
+                // 构建提示词：如果两个都有内容就组合，否则使用有内容的那个
+                const prompt = dream && keywords 
+                    ? `${dream} with ${keywords}`
+                    : dream || keywords;
+
+                const response = await fetch(`${API_BASE_URL}/api/generate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ dream, keywords })
+                    body: JSON.stringify({ 
+                        dream: prompt,
+                        keywords: ''  // 因为已经在 prompt 中组合了
+                    })
                 });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to generate image');
+                }
 
                 const data = await response.json();
                 
@@ -487,7 +499,7 @@
             console.log('当前梦境内容:', currentDream);
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/continue-dream`, {
+                const response = await fetch(`${API_BASE_URL}/api/continue`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
