@@ -81,17 +81,7 @@
             max-width: 80%;
             opacity: 0;
             margin-bottom: 2em;
-            animation: welcomeTextIn 1s forwards;
-        }
-        @keyframes welcomeTextIn {
-            0% { 
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            100% { 
-                transform: translateY(0);
-                opacity: 1;
-            }
+            transition: opacity 0.5s ease-in-out;
         }
         .container {
             max-width: 1000px;
@@ -269,8 +259,7 @@
             margin-top: 30px;
             transition: all 0.3s ease;
             opacity: 0;
-            animation: fadeIn 0.5s forwards;
-            animation-delay: 0.5s;
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
         }
         .welcome-button:hover {
             background: #f0f0f0;
@@ -384,15 +373,29 @@
         ];
 
         const showWelcome = async () => {
-            for (const message of welcomeMessages) {
-                welcomeText.style.opacity = 0;
-                await new Promise(r => setTimeout(r, 500));
-                welcomeText.textContent = message;
-                welcomeText.style.opacity = 1;
+            try {
+                for (let i = 0; i < welcomeMessages.length; i++) {
+                    welcomeText.style.opacity = 0;
+                    await new Promise(r => setTimeout(r, 500));
+                    welcomeText.textContent = welcomeMessages[i];
+                    welcomeText.style.opacity = 1;
+                    if (i < welcomeMessages.length - 1) {
+                        await new Promise(r => setTimeout(r, 2500));
+                    }
+                }
                 await new Promise(r => setTimeout(r, 1000));
+                enterButton.style.opacity = 0;
+                enterButton.style.display = 'block';
+                setTimeout(() => {
+                    enterButton.style.opacity = 1;
+                }, 100);
+            } catch (error) {
+                console.error('Welcome animation error:', error);
+                welcomeText.textContent = welcomeMessages[welcomeMessages.length - 1];
+                welcomeText.style.opacity = 1;
+                enterButton.style.display = 'block';
+                enterButton.style.opacity = 1;
             }
-            await new Promise(r => setTimeout(r, 500));
-            enterButton.style.display = 'block';
         };
         enterButton.addEventListener('click', () => {
             welcomeScreen.style.opacity = 0;
