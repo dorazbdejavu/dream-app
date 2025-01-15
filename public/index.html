@@ -448,7 +448,7 @@
             imageContainer.innerHTML = '';
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/generate-dream`, {
+                const response = await fetch(`${API_BASE_URL}/api/generate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -500,7 +500,7 @@
             console.log('当前梦境内容:', currentDream);
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/continue-dream`, {
+                const response = await fetch(`${API_BASE_URL}/api/continue`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

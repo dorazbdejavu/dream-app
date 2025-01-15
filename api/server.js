@@ -13,32 +13,37 @@ export default class DreamAPI {
 
     async generateDream(req, res) {
         try {
+            console.log('Request body:', req.body);
             console.log('Generating image for prompt:', req.body.dream);
             
             // 确保提示词是有效的字符串
             const cleanPrompt = String(req.body.dream).trim();
+            console.log('Cleaned prompt:', cleanPrompt);
+            
             if (!cleanPrompt) {
                 throw new Error('Empty prompt');
             }
             
             // 构建更安全和艺术化的提示词
-            let enhancedPrompt = `A serene digital artwork depicting ${cleanPrompt}`;
+            let enhancedPrompt = `A painting of ${cleanPrompt}`;
             
             // 如果有关键词，添加到提示词中
             if (req.body.keywords) {
                 const keywords = String(req.body.keywords).trim();
                 if (keywords) {
-                    enhancedPrompt += `, featuring ${keywords}`;
+                    enhancedPrompt += ` with ${keywords}`;
                 }
             }
             
             // 添加风格描述
-            enhancedPrompt += `. Soft lighting and dreamy atmosphere.`;
+            enhancedPrompt += `, dreamlike style`;
             
             // 确保提示词不包含特殊字符
-            enhancedPrompt = enhancedPrompt.replace(/[^\w\s,.']/g, '');
+            enhancedPrompt = enhancedPrompt.replace(/[^\w\s,]/g, ' ');
+            enhancedPrompt = enhancedPrompt.replace(/\s+/g, ' ').trim();
             
-            console.log('Enhanced prompt:', enhancedPrompt);
+            console.log('Final enhanced prompt:', enhancedPrompt);
+            console.log('Sending request to DALL-E with prompt length:', enhancedPrompt.length);
             
             const response = await this.openai.images.generate({
                 model: "dall-e-3",
@@ -107,4 +112,4 @@ export default class DreamAPI {
             });
         }
     }
-}
+} 
