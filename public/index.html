@@ -30,6 +30,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: 0;
         }
         .star {
             position: absolute;
@@ -71,7 +72,7 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
+            background: transparent;
         }
         #welcome-text {
             color: #fff;
@@ -82,6 +83,363 @@
             margin-bottom: 2em;
             animation: fadeIn 1s forwards;
         }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        .input-area {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: rgba(255,255,255,0.8);
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 16px;
+            resize: vertical;
+        }
+        textarea::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        button {
+            background: #fff;
+            color: #000;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        .loading {
+            display: none;
+            color: rgba(255,255,255,0.6);
+            margin: 15px 0;
+            text-align: center;
+            position: relative;
+            padding: 20px;
+        }
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .primary-button {
+            flex: 2;
+        }
+        .continue-button {
+            flex: 1;
+            background: rgba(128,0,128,0.3);
+        }
+        .continue-button:hover {
+            background: rgba(128,0,128,0.5);
+        }
+        .image-container {
+            margin-top: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .image-box {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .image-box img {
+            width: 100%;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .prompt-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.6);
+        }
+        .dream-continuation {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+        .dream-continuation p {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 10px;
+        }
+        .dream-text {
+            color: rgba(255,255,255,0.9);
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .title {
+                font-size: 2em;
+                margin-bottom: 30px;
+            }
+            .input-area {
+                padding: 20px;
+            }
+            textarea {
+                font-size: 14px;
+                padding: 12px;
+            }
+            button {
+                width: 100%;
+                margin-top: 10px;
+                padding: 15px;
+            }
+            .image-container {
+                margin-top: 30px;
+            }
+            .image-box {
+                padding: 10px;
+            }
+            .dream-continuation {
+                padding: 12px;
+            }
+        }
+        .welcome-button {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            animation-delay: 0.5s;
+        }
+        .welcome-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        .main-content {
+            display: none;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome-screen">
+        <div class="welcome-screen-content">
+            <p id="welcome-text" class="welcome-text">在梦的边界，我们相遇...</p>
+            <button id="enterButton" class="welcome-button" style="display: none;">进入梦境</button>
+        </div>
+    </div>
+    <div class="stars"></div>
+    <div class="clouds-container">
+        <div class="cloud" style="--duration: 60s; --start-position: -200px; --cloud-top: 20%">
+            <svg width="200" height="100" viewBox="0 0 200 100">
+                <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
+            </svg>
+        </div>
+        <div class="cloud" style="--duration: 80s; --start-position: -300px; --cloud-top: 40%">
+            <svg width="160" height="80" viewBox="0 0 200 100">
+                <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
+            </svg>
+        </div>
+        <div class="cloud" style="--duration: 70s; --start-position: -400px; --cloud-top: 60%">
+            <svg width="180" height="90" viewBox="0 0 200 100">
+                <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div class="container main-content">
+        <h1 class="title">梦觅境：寻觅你的梦域</h1>
+        <div class="input-area">
+            <div class="input-group">
+                <label>给我一些碎片，帮你拼凑起来...</label>
+                <textarea 
+                    id="dream" 
+                    rows="4" 
+                    placeholder="描述你的梦境片段..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>关键词</label>
+                <textarea 
+                    id="keywords" 
+                    rows="2" 
+                    placeholder="用逗号分隔关键词..."></textarea>
+            </div>
+            <div class="button-group">
+                <button onclick="generateDreamImages()" class="primary-button">开始寻梦</button>
+                <button onclick="continueDream()" class="continue-button">继续梦境</button>
+            </div>
+            <div id="loading" class="loading">故事正在继续...</div>
+            <div id="dreamContinuation" class="dream-text"></div>
+        </div>
+        
+        <div id="imageContainer" class="image-container"></div>
+    </div>
+
+    <script>
+        // 欢迎动画
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const welcomeText = document.getElementById('welcome-text');
+        const enterButton = document.getElementById('enterButton');
+        const mainContent = document.querySelector('.main-content');
+        
+        const welcomeMessages = [
+            "在梦的边界，我们相遇...",
+            "让思绪化作星光...",
+            "在这里，每个梦都值得被倾听...",
+            "准备好了吗？让我们开始梦的旅程...",
+            "欢迎来到梦觅境..."
+        ];
+
+        const showWelcome = async () => {
+            for (const message of welcomeMessages) {
+                welcomeText.style.opacity = 0;
+                await new Promise(r => setTimeout(r, 500));
+                welcomeText.textContent = message;
+                welcomeText.style.opacity = 1;
+                await new Promise(r => setTimeout(r, 1000));
+            }
+            await new Promise(r => setTimeout(r, 500));
+            enterButton.style.display = 'block';
+        };
+
+        enterButton.addEventListener('click', () => {
+            welcomeScreen.style.opacity = 0;
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                mainContent.style.opacity = '1';
+            }, 1000);
+        });
+
+        // 页面加载完成后开始动画
+        window.addEventListener('load', () => {
+            showWelcome();
+            createStars();
+        });
+
+        // 创建星星
+        function createStars() {
+            const stars = document.querySelector('.stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                stars.appendChild(star);
+            }
+        }
+
+        let currentDream = '';
+
+        const API_BASE_URL = window.location.origin;  // 使用当前域名
+
+        async function generateDreamImages() {
+            const dream = document.getElementById('dream').value;
+            const keywords = document.getElementById('keywords').value;
+            const loading = document.getElementById('loading');
+            const imageContainer = document.getElementById('imageContainer');
+
+            if (!dream) {
+                alert('请描述你的梦境');
+                return;
+            }
+
+            currentDream = dream;
+            console.log('保存当前梦境:', currentDream);
+            loading.style.display = 'block';
+            
+            imageContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/generate-dream`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ dream, keywords })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const imageBox = document.createElement('div');
+                    imageBox.className = 'image-box';
+                    
+                    const img = document.createElement('img');
+                    img.src = data.imageUrl;
+                    
+                    const promptText = document.createElement('div');
+                    promptText.className = 'prompt-text';
+                    promptText.textContent = data.prompt;
+                    
+                    imageBox.appendChild(img);
+                    imageBox.appendChild(promptText);
+                    imageContainer.appendChild(imageBox);
+                } else {
+                    throw new Error(data.error);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('生成梦境图像失败：' + error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
         async function continueDream() {
             const loading = document.getElementById('loading');
             const dreamInput = document.getElementById('dream');
@@ -125,9 +483,6 @@
                 loading.style.display = 'none';
             }
         }
-
-        // 初始化
-        createStars();
     </script>
 </body>
 </html>
