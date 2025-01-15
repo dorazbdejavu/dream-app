@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+      {
+          "src": "server.js",
+          "use": "@vercel/node"
+      }
+  ],
+  "routes": [
+      {
+-           "src": "/api/(.*)",
+-           "dest": "server.js"
++           "src": "/api/(.*)",
++           "dest": "/server.js"
+      },
+      {
+-           "src": "/(.*)",
+-           "dest": "index.html"
++           "src": "/(.*)",
++           "dest": "/index.html"
+      }
+  ],
++   "env": {
++       "OPENAI_API_KEY": "@openai_api_key"
++   }
+}
