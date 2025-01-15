@@ -12,6 +12,10 @@
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; }
         }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
         body {
             font-family: "PingFang SC", "Hiragino Sans GB", sans-serif;
             margin: 0;
@@ -20,6 +24,59 @@
             color: #fff;
             position: relative;
             overflow-x: hidden;
+        }
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s;
+        }
+        .welcome-screen-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: transparent;
+        }
+        #welcome-text {
+            color: #fff;
+            font-size: 1.6em;
+            text-align: center;
+            max-width: 80%;
+            opacity: 0;
+            margin-bottom: 2em;
+            transition: opacity 0.3s ease;
+        }
+        .welcome-button {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        .welcome-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        .main-content {
+            display: none;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
         }
         .stars {
             position: fixed;
@@ -33,15 +90,18 @@
             border-radius: 50%;
             animation: twinkle 2s infinite;
         }
-        .moon {
+        .header-cloud {
             position: fixed;
-            top: 50px;
-            right: 50px;
-            width: 100px;
-            height: 100px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            opacity: 0.15;
+            animation: floatUpDown 6s ease-in-out infinite;
+        }
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-15px); }
         }
         .cloud {
             position: fixed;
@@ -51,7 +111,7 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 90px 20px 40px;
             position: relative;
             z-index: 1;
         }
@@ -90,8 +150,8 @@
             color: rgba(255,255,255,0.3);
         }
         button {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: #fff;
+            color: #000;
             border: 1px solid rgba(255,255,255,0.2);
             padding: 12px 25px;
             border-radius: 25px;
@@ -100,7 +160,7 @@
             transition: all 0.3s ease;
         }
         button:hover {
-            background: rgba(255,255,255,0.2);
+            background: #f0f0f0;
             transform: translateY(-2px);
         }
         .loading {
@@ -220,43 +280,103 @@
     </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="moon"></div>
-    <div class="cloud">
-        <svg width="200" height="100" viewBox="0 0 200 100">
-            <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
-        </svg>
+    <div id="welcome-screen">
+        <div class="welcome-screen-content">
+            <div class="welcome-cloud">
+                <svg width="200" height="100" viewBox="0 0 200 100">
+                    <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
+                </svg>
+            </div>
+            <p id="welcome-text" class="welcome-text">在梦的边界，我们相遇...</p>
+            <button id="enterButton" class="welcome-button" style="display: none;">进入梦境</button>
+        </div>
     </div>
-    
-    <div class="container">
-        <h1 class="title">梦觅境：寻觅你的梦域</h1>
-        <div class="input-area">
-            <div class="input-group">
-                <label>给我一些碎片，帮你拼凑起来...</label>
-                <textarea 
-                    id="dream" 
-                    rows="4" 
-                    placeholder="描述你的梦境片段..."></textarea>
-            </div>
-            <div class="input-group">
-                <label>关键词</label>
-                <textarea 
-                    id="keywords" 
-                    rows="2" 
-                    placeholder="用逗号分隔关键词..."></textarea>
-            </div>
-            <div class="button-group">
-                <button onclick="generateDreamImages()" class="primary-button">开始寻梦</button>
-                <button onclick="continueDream()" class="continue-button">继续梦境</button>
-            </div>
-            <div id="loading" class="loading">故事正在继续...</div>
-            <div id="dreamContinuation" class="dream-text"></div>
+    <div class="stars"></div>
+    <div class="container main-content">
+        <div class="header-cloud">
+            <svg width="300" height="150" viewBox="0 0 200 100">
+                <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
+            </svg>
+        </div>
+        <div class="cloud">
+            <svg width="200" height="100" viewBox="0 0 200 100">
+                <path d="M20,50 Q40,20 80,30 Q100,10 120,30 Q160,20 180,50 Q200,80 160,80 Q140,90 120,80 Q100,90 80,80 Q40,90 20,80 Q0,70 20,50" fill="white"/>
+            </svg>
         </div>
         
-        <div id="imageContainer" class="image-container"></div>
+        <div class="container">
+            <h1 class="title">梦觅境：寻觅你的梦域</h1>
+            <div class="input-area">
+                <div class="input-group">
+                    <label>给我一些碎片，帮你拼凑起来...</label>
+                    <textarea 
+                        id="dream" 
+                        rows="4" 
+                        placeholder="描述你的梦境片段..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>关键词</label>
+                    <textarea 
+                        id="keywords" 
+                        rows="2" 
+                        placeholder="用逗号分隔关键词..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button onclick="generateDreamImages()" class="primary-button">开始寻梦</button>
+                    <button onclick="continueDream()" class="continue-button">继续梦境</button>
+                </div>
+                <div id="loading" class="loading">故事正在继续...</div>
+                <div id="dreamContinuation" class="dream-text"></div>
+            </div>
+            
+            <div id="imageContainer" class="image-container"></div>
+        </div>
     </div>
 
     <script>
+        // 欢迎动画
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const welcomeText = document.getElementById('welcome-text');
+        const enterButton = document.getElementById('enterButton');
+        const mainContent = document.querySelector('.main-content');
+        
+        const welcomeMessages = [
+            "在梦的边界，我们相遇...",
+            "让思绪化作星光...",
+            "在这里，每个梦都值得被倾听...",
+            "准备好了吗？让我们开始梦的旅程...",
+            "欢迎来到梦觅境..."
+        ];
+
+        const showWelcome = async () => {
+            for (let i = 0; i < welcomeMessages.length; i++) {
+                welcomeText.style.opacity = 0;
+                await new Promise(r => setTimeout(r, 500));
+                welcomeText.textContent = welcomeMessages[i];
+                welcomeText.style.opacity = 1;
+                if (i < welcomeMessages.length - 1) {
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+            }
+            await new Promise(r => setTimeout(r, 1000));
+            enterButton.style.display = 'block';
+        };
+
+        enterButton.addEventListener('click', () => {
+            welcomeScreen.style.opacity = 0;
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                mainContent.style.opacity = '1';
+            }, 1000);
+        });
+
+        // 页面加载完成后开始动画
+        window.addEventListener('load', () => {
+            showWelcome();
+            createStars();
+        });
+
         // 创建星星
         function createStars() {
             const stars = document.querySelector('.stars');
@@ -373,9 +493,6 @@
                 loading.style.display = 'none';
             }
         }
-
-        // 初始化
-        createStars();
     </script>
 </body>
 </html>
