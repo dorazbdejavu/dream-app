@@ -414,7 +414,6 @@
         }
 
         let currentDream = '';
-
         const API_BASE_URL = '/api';
 
         async function generateDreamImages() {
@@ -448,7 +447,7 @@
                     },
                     body: JSON.stringify({ 
                         dream: prompt,
-                        keywords: ''  // 因为已经在 prompt 中组合了
+                        keywords: keywords
                     })
                 });
 
@@ -508,7 +507,7 @@
             console.log('当前梦境内容:', currentDream);
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/continue`, {
+                const response = await fetch(`${API_BASE_URL}/continue`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
