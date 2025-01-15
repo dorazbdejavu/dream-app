@@ -60,7 +60,7 @@ class DreamImageGenerator {
 const app = express();
 // 修改 CORS 配置
 app.use(cors({
-    origin: ['https://dream-app-dorazbdejavu.vercel.app', 'http://localhost:3000'],
+    origin: ['https://dream-app-pearl.vercel.app', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
     credentials: true
 }));
