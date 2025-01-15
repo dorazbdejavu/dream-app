@@ -17,18 +17,19 @@ export default class DreamAPI {
                 throw new Error('Empty prompt');
             }
             
-            let enhancedPrompt = `A dreamy and artistic illustration of: ${cleanPrompt}`;
+            // 构建更安全和艺术化的提示词
+            let enhancedPrompt = `Create a dreamy digital art illustration showing ${cleanPrompt}`;
             
             // 如果有关键词，添加到提示词中
             if (req.body.keywords) {
                 const keywords = String(req.body.keywords).trim();
                 if (keywords) {
-                    enhancedPrompt += `. Keywords: ${keywords}`;
+                    enhancedPrompt += `, incorporating elements of ${keywords}`;
                 }
             }
             
             // 添加风格描述
-            enhancedPrompt += `. Style: ethereal, dreamlike, soft lighting, artistic composition, digital art`;
+            enhancedPrompt += `. Use ethereal lighting, soft colors, and a dreamlike atmosphere. Make it artistic and surreal.`;
             
             console.log('Enhanced prompt:', enhancedPrompt);
             
