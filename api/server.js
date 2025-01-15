@@ -17,8 +17,19 @@ export default class DreamAPI {
                 throw new Error('Empty prompt');
             }
             
-            // 构建更详细的提示词
-            const enhancedPrompt = `A dreamy and surreal scene: ${cleanPrompt}. Ethereal atmosphere, soft lighting, dreamlike quality, artistic style.`;
+            let enhancedPrompt = `A dreamy and artistic illustration of: ${cleanPrompt}`;
+            
+            // 如果有关键词，添加到提示词中
+            if (req.body.keywords) {
+                const keywords = String(req.body.keywords).trim();
+                if (keywords) {
+                    enhancedPrompt += `. Keywords: ${keywords}`;
+                }
+            }
+            
+            // 添加风格描述
+            enhancedPrompt += `. Style: ethereal, dreamlike, soft lighting, artistic composition, digital art`;
+            
             console.log('Enhanced prompt:', enhancedPrompt);
             
             const response = await this.openai.images.generate({
